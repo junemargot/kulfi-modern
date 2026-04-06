@@ -1,0 +1,104 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '4.0.3'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.kulfi'
+version = '0.0.1-SNAPSHOT'
+description = 'Demo project for Spring Boot'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-flyway'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	implementation 'org.flywaydb:flyway-mysql'
+
+	// == 추가 의존성 ==
+
+	// Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+
+	// Mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	// QueryDSL 5
+	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
+	annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
+	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+	// OAuth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// Swagger 
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6'
+
+	// S3 파일 업로드
+	implementation 'software.amazon.awssdk:s3:2.29.0'
+
+	// 썸네일 생성
+	implementation 'net.coobird:thumbnailator:0.4.20'
+
+	// SQL 로깅 (개발용)
+	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.2'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// Database
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// Test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// testImplementation 'org.springframework.boot:spring-boot-starter-actuator-test'
+	// testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
+	// testImplementation 'org.springframework.boot:spring-boot-starter-flyway-test'
+	// testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
+	// testImplementation 'org.springframework.boot:spring-boot-starter-validation-test'
+	// testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+}
+
+// QueryDSL Q클래스 생성 경로
+	def querydslDir = "$buildDir/generated/querydsl"
+
+	sourceSets {
+		main.java.srcDirs += [querydslDir]
+	}
+
+	tasks.withType(JavaCompile).configureEach {
+		options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+	}
+
+	clean.doLast {
+		file(querydslDir).deleteDir()
+	}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

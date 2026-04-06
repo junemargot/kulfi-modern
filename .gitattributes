@@ -1,0 +1,7 @@
+# Backend/Gradle 전용 설정
+backend/gradlew text eol=lf
+backend/*.bat text eol=crlf
+backend/*.jar binary
+
+# 모든 텍스트 파일에 대해 LF 줄 바꿈을 기본으로 사용
+* text=auto eol=lf
